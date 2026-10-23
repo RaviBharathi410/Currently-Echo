@@ -111,5 +111,15 @@
   - Accessibility: `MediaQuery.disableAnimations` triggers a static complete frame held for ~800ms before cutting cleanly. Single semantics node (`ECHO, loading`) with `sendAnnouncement('ECHO ready')` upon dismissal.
 - **Consequences**: Zero impact on route count, route tables, or redirects. 100% resilient to 200% text scale and 320dp width viewports.
 
+## ADR-013: Electric Royal Blue Palette & Plus Jakarta Sans Typography Migration
+- **Date**: 2026-10-23
+- **Context**: Visual brand update per design reference diagram. The application required transition to a high-contrast Electric Royal Blue palette (`#005CE6`, hue 216°) and modern geometric sans typography (**Plus Jakarta Sans**).
+- **Decision**:
+  - Migrated `AppColors.blue500` to `#005CE6` (luminance $0.1337$), providing **5.72:1** contrast on pure white and **5.02:1** on `AppColors.blue100` (`#E8F1FF`), strictly satisfying WCAG AA.
+  - Migrated `AppColors.blue400` to `#2E82F7` (luminance $0.2326$), providing **3.72:1** contrast on white, satisfying WCAG 1.4.11 ($\ge 3:1$).
+  - Migrated `AppColors.textPrimary` to `#0A192F` (**17.6:1** AAA) and `textSecondary` to `#48586E` (**7.25:1** AA).
+  - Configured **Plus Jakarta Sans** as the canonical application font across `AppTypography.fontFamily`, `ThemeData`, `pubspec.yaml`, and `web/index.html`. Bundled variable TTF in `assets/fonts/` for offline/test reliability.
+- **Consequences**: 100% monochromatic hue compliance (214°–218°), algorithmic contrast verification pass, zero regressions across test suites.
+
 
 

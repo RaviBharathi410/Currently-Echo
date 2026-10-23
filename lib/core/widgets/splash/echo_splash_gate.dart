@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
+import '../../theme/app_colors.dart';
+import '../../theme/app_typography.dart';
+import '../../theme/app_shadows.dart';
 import 'split_horizon_layer.dart';
 
 /// Overlay widget wrapped around the application that presents the "Split Horizon"
@@ -21,6 +24,7 @@ class EchoSplashGate extends StatefulWidget {
   final Duration maxDuration;
   final Duration reduceMotionHoldDuration;
   final bool disableOverlay;
+  final bool showBlockingModal;
   final VoidCallback? onDismissed;
 
   const EchoSplashGate({
@@ -33,6 +37,7 @@ class EchoSplashGate extends StatefulWidget {
     this.maxDuration = const Duration(milliseconds: 4000),
     this.reduceMotionHoldDuration = const Duration(milliseconds: 800),
     this.disableOverlay = false,
+    this.showBlockingModal = false,
     this.onDismissed,
   });
 
@@ -277,6 +282,50 @@ class _EchoSplashGateState extends State<EchoSplashGate>
             ),
           ),
         ),
+
+        // Layer 4: Blocking interaction modal card ("Launching... Please wait")
+        if (widget.showBlockingModal)
+          Center(
+            child: Material(
+              color: AppColors.transparent,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 22.0),
+                decoration: BoxDecoration(
+                  color: AppColors.white,
+                  borderRadius: BorderRadius.circular(16.0),
+                  boxShadow: AppShadows.modal,
+                ),
+                child: const Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.lock_rounded, size: 36.0, color: AppColors.blue500),
+                    SizedBox(height: 12.0),
+                    Text(
+                      'Launching...',
+                      style: TextStyle(
+                        fontFamily: AppTypography.fontFamily,
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textPrimary,
+                        decoration: TextDecoration.none,
+                      ),
+                    ),
+                    SizedBox(height: 4.0),
+                    Text(
+                      'Please wait',
+                      style: TextStyle(
+                        fontFamily: AppTypography.fontFamily,
+                        fontSize: 12.0,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.textSecondary,
+                        decoration: TextDecoration.none,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
       ],
     );
   }

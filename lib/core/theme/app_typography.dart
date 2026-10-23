@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'app_colors.dart';
 
 abstract class AppTypography {
-  static const String fontFamily = 'DMSans';
+  static const String fontFamily = 'PlusJakartaSans';
 
   /// Provisional logo size token outside the standard body scale (56sp Bold 700).
   /// Dedicated to the ECHO brand wordmark in launch splash and branded headers.
@@ -12,6 +12,7 @@ abstract class AppTypography {
     fontWeight: FontWeight.w700,
     height: 1.0,
     letterSpacing: 0.0,
+    decoration: TextDecoration.none,
   );
 
   static const TextStyle displayLarge = TextStyle(

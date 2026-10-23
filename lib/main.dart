@@ -297,7 +297,7 @@ class _ComponentGalleryScreenState extends State<ComponentGalleryScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    EchoText('Typography Scale (DM Sans)', variant: EchoTextStyleVariant.heading),
+                    EchoText('Typography Scale (Plus Jakarta Sans)', variant: EchoTextStyleVariant.heading),
                     SizedBox(height: AppSpacing.p8),
                     EchoText('Display Large 32sp', variant: EchoTextStyleVariant.displayLarge),
                     SizedBox(height: AppSpacing.p4),

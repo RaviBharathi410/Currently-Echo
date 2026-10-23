@@ -37,7 +37,10 @@ class EchoWordmark extends StatelessWidget {
       letterProgressO,
     ];
 
-    final textStyle = AppTypography.wordmark.copyWith(color: color);
+    final textStyle = AppTypography.wordmark.copyWith(
+      color: color,
+      decoration: TextDecoration.none,
+    );
 
     return Transform.scale(
       scale: scale,

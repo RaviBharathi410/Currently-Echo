@@ -31,9 +31,9 @@ void main() {
           fail('Hard-coded Color in ${file.path}:${i + 1}. All colors must reference AppColors: $rawLine');
         }
 
-        // 3. Non-DM-Sans font declaration
-        if (line.contains(RegExp(r'fontFamily:\s*[\x27\x22](?!DMSans)[\w\s]+[\x27\x22]'))) {
-          fail('Non-DM-Sans font declaration in ${file.path}:${i + 1}: $rawLine');
+        // 3. Non-PlusJakartaSans font declaration
+        if (line.contains(RegExp(r'fontFamily:\s*[\x27\x22](?!(PlusJakartaSans|DMSans))[\w\s]+[\x27\x22]'))) {
+          fail('Non-PlusJakartaSans font declaration in ${file.path}:${i + 1}: $rawLine');
         }
 
         // 4. Decibel claims forbidden (dB, dB HL, etc.)

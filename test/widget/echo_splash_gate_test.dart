@@ -312,5 +312,50 @@ void main() {
 
       expect(tester.takeException(), isNull);
     });
+
+    testWidgets('SplitHorizonLayer renders "Your ideas, amplified." tagline in reduce motion / settled state', (tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: SplitHorizonLayer(
+              animationValue: 0.85,
+              isReduceMotion: true,
+            ),
+          ),
+        ),
+      );
+
+      expect(find.text('Your ideas, amplified.'), findsOneWidget);
+    });
+
+    testWidgets('SplitHorizonLayer renders live progress percentage during readiness loading', (tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: SplitHorizonLayer(
+              animationValue: 0.20,
+              readinessProgress: 0.35,
+            ),
+          ),
+        ),
+      );
+
+      expect(find.text('35%'), findsOneWidget);
+    });
+
+    testWidgets('EchoSplashGate renders "Launching... Please wait" blocking card when showBlockingModal is true', (tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: EchoSplashGate(
+            showBlockingModal: true,
+            child: Scaffold(body: Text('App Content')),
+          ),
+        ),
+      );
+
+      expect(find.text('Launching...'), findsOneWidget);
+      expect(find.text('Please wait'), findsOneWidget);
+      expect(find.byIcon(Icons.lock_rounded), findsOneWidget);
+    });
   });
 }
