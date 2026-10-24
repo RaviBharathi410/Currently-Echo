@@ -194,6 +194,7 @@ void main() {
 
       expect(find.text('Continue to Dashboard'), findsOneWidget);
 
+      await tester.scrollUntilVisible(find.text('Continue to Dashboard'), 100);
       await tester.tap(find.text('Continue to Dashboard'));
       await tester.pumpAndSettle();
 

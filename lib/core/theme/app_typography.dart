@@ -2,7 +2,17 @@ import 'package:flutter/material.dart';
 import 'app_colors.dart';
 
 abstract class AppTypography {
-  static const String fontFamily = 'PlusJakartaSans';
+  static const String fontFamily = 'DMSans';
+
+  /// Huge test frequency display (e.g. "1000 Hz", "2000 Hz") in screening test flow
+  static const TextStyle frequencyDisplay = TextStyle(
+    fontFamily: fontFamily,
+    fontSize: 38.0,
+    fontWeight: FontWeight.w700,
+    height: 44.0 / 38.0,
+    letterSpacing: -0.5,
+    color: AppColors.textPrimary,
+  );
 
   /// Provisional logo size token outside the standard body scale (56sp Bold 700).
   /// Dedicated to the ECHO brand wordmark in launch splash and branded headers.

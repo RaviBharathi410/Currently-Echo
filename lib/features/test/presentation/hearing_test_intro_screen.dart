@@ -8,7 +8,8 @@ import '../../../core/widgets/primitives/echo_button.dart';
 import '../../../core/widgets/primitives/echo_card.dart';
 import '../../../core/widgets/primitives/echo_text.dart';
 import '../../../core/widgets/domain/sample_data_tag.dart';
-import '../../../core/widgets/domain/sound_wave_hero.dart';
+import '../../../core/widgets/domain/echo_glow_rings.dart';
+import '../../../core/widgets/domain/echo_headphone_hero.dart';
 import '../application/hearing_test_notifier.dart';
 import '../domain/models/hearing_threshold_result.dart';
 import 'widgets/hearing_readiness_checklist.dart';
@@ -88,10 +89,17 @@ class _HearingTestIntroScreenState extends ConsumerState<HearingTestIntroScreen>
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Center(
+                          Center(
                             child: Padding(
-                              padding: EdgeInsets.symmetric(vertical: AppSpacing.p12),
-                              child: SoundWaveHero(),
+                              padding: const EdgeInsets.symmetric(vertical: AppSpacing.p12),
+                              child: EchoGlowRings(
+                                size: 160.0,
+                                isPulsing: true,
+                                child: const EchoHeadphoneHero(
+                                  size: 130.0,
+                                  showBadges: true,
+                                ),
+                              ),
                             ),
                           ),
                           Row(

@@ -35,15 +35,16 @@ class EchoAppBar extends StatelessWidget implements PreferredSizeWidget {
           children: [
             if (showBackButton)
               ConstrainedBox(
-                constraints: const BoxConstraints(minWidth: 48.0, minHeight: 48.0),
+                constraints: const BoxConstraints(minWidth: 40.0, minHeight: 40.0),
                 child: IconButton(
+                  padding: EdgeInsets.zero,
                   tooltip: 'Go back',
                   icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
                   onPressed: onBack ?? () => Navigator.of(context).maybePop(),
                 ),
               )
             else
-              const SizedBox(width: AppSpacing.p8),
+              const SizedBox(width: AppSpacing.p4),
             Expanded(
               child: Semantics(
                 header: true,
@@ -55,7 +56,11 @@ class EchoAppBar extends StatelessWidget implements PreferredSizeWidget {
                 ),
               ),
             ),
-            if (actions != null) ...actions!,
+            if (actions != null)
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: actions!,
+              ),
           ],
         ),
       ),

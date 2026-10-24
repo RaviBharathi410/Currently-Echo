@@ -2,17 +2,38 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_radii.dart';
+import '../../../core/widgets/domain/echo_ring_gauge.dart';
+import '../../../core/widgets/domain/echo_wave_backdrop.dart';
+import '../../../core/widgets/domain/sample_data_tag.dart';
 import '../../../core/widgets/navigation/echo_app_bar.dart';
 import '../../../core/widgets/primitives/echo_button.dart';
 import '../../../core/widgets/primitives/echo_card.dart';
+import '../../../core/widgets/primitives/echo_segmented_control.dart';
+import '../../../core/widgets/primitives/echo_stat_tile.dart';
 import '../../../core/widgets/primitives/echo_text.dart';
-import '../../../core/widgets/domain/sample_data_tag.dart';
 
-class MonitoringScreen extends StatelessWidget {
+/// Screen 8: Sound Monitoring
+/// Matches Board 1 Screen 8.
+/// Integrates [EchoRingGauge], [EchoWaveBackdrop], [EchoSegmentedControl], and [EchoStatTile].
+/// Strict non-negotiable rules: strictly zero 'dB' references, zero clinical claims,
+/// and purely monochromatic Electric Royal Blue & white palette.
+class MonitoringScreen extends StatefulWidget {
   const MonitoringScreen({super.key});
 
   @override
+  State<MonitoringScreen> createState() => _MonitoringScreenState();
+}
+
+class _MonitoringScreenState extends State<MonitoringScreen> {
+  String _selectedTimeframe = 'Daily';
+
+  @override
   Widget build(BuildContext context) {
+    final isDaily = _selectedTimeframe == 'Daily';
+    final gaugeValue = isDaily ? 0.60 : 0.45;
+    final levelLabel = isDaily ? 'Level 3 of 5' : 'Level 2 of 5';
+
     return Scaffold(
       appBar: const EchoAppBar(
         title: 'Sound Monitoring',
@@ -30,40 +51,130 @@ class MonitoringScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              // 1. Timeframe Segmented Control (Daily / Weekly)
+              EchoSegmentedControl<String>(
+                options: const [
+                  EchoSegmentOption(value: 'Daily', label: 'Daily', icon: Icons.today),
+                  EchoSegmentOption(value: 'Weekly', label: 'Weekly', icon: Icons.view_week),
+                ],
+                selectedValue: _selectedTimeframe,
+                onChanged: (val) => setState(() => _selectedTimeframe = val),
+              ),
+              const SizedBox(height: AppSpacing.p16),
+
+              // 2. Central Gauge Card with Multi-layered Wave Backdrop
               EchoCard(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Expanded(
-                          child: EchoText('Live Sound Monitor', variant: EchoTextStyleVariant.titleMedium),
+                          child: EchoText(
+                            'Current Sound Exposure',
+                            variant: EchoTextStyleVariant.cardTitle,
+                          ),
                         ),
-                        SizedBox(width: AppSpacing.p8),
                         SampleDataTag(),
                       ],
                     ),
+                    const SizedBox(height: AppSpacing.p4),
+                    const EchoText(
+                      'Illustrative acoustic exposure estimate based on ambient guidelines.',
+                      variant: EchoTextStyleVariant.caption,
+                      color: AppColors.textSecondary,
+                    ),
                     const SizedBox(height: AppSpacing.p16),
-                    Row(
-                      children: [
-                        const Icon(Icons.mic, color: AppColors.blue500, size: 36.0),
-                        const SizedBox(width: AppSpacing.p16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [
-                              EchoText('Moderate Level', variant: EchoTextStyleVariant.displayLarge, color: AppColors.blue500),
-                              EchoText('Comfortable ambient environment', variant: EchoTextStyleVariant.caption),
-                            ],
+
+                    // Centered Ring Gauge embedded in Wave Backdrop
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(AppRadii.md),
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          const EchoWaveBackdrop(height: 240.0),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: AppSpacing.p12),
+                            child: EchoRingGauge(
+                              value: gaugeValue,
+                              size: 210.0,
+                              levelLabel: levelLabel,
+                              statusLabel: 'Moderate, sample',
+                              centerIcon: Icons.graphic_eq_rounded,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ],
                 ),
               ),
               const SizedBox(height: AppSpacing.p16),
+
+              // 3. Dual Stat Tiles (Ambient vs Headphone) with responsive wrap for 200% accessibility scale
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final tileA = EchoStatTile(
+                    icon: Icons.mic_none_outlined,
+                    value: isDaily ? 'Level 2' : 'Level 2',
+                    label: 'Ambient Sound',
+                    badgeText: 'Moderate',
+                  );
+                  final tileB = EchoStatTile(
+                    icon: Icons.headphones_outlined,
+                    value: isDaily ? '2h 15m' : '14h 40m',
+                    label: 'Headset Exposure',
+                    badgeText: 'In Range',
+                  );
+
+                  final textScale = MediaQuery.textScalerOf(context).scale(1.0);
+                  if (constraints.maxWidth < 340 || textScale > 1.3) {
+                    return Column(
+                      children: [
+                        tileA,
+                        const SizedBox(height: AppSpacing.p12),
+                        tileB,
+                      ],
+                    );
+                  }
+                  return Row(
+                    children: [
+                      Expanded(child: tileA),
+                      const SizedBox(width: AppSpacing.p12),
+                      Expanded(child: tileB),
+                    ],
+                  );
+                },
+              ),
+              const SizedBox(height: AppSpacing.p16),
+
+              // 4. Acoustic Guidance Summary Card
+              EchoCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Row(
+                      children: [
+                        Icon(Icons.info_outline, color: AppColors.blue500, size: 24.0),
+                        SizedBox(width: AppSpacing.p8),
+                        Expanded(
+                          child: EchoText('Acoustic Awareness Note', variant: EchoTextStyleVariant.labelBold),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: AppSpacing.p8),
+                    const EchoText(
+                      'Maintaining personal audio at moderate levels supports daily auditory comfort. Measurements represent simulated non-calibrated estimates.',
+                      variant: EchoTextStyleVariant.bodyMedium,
+                      color: AppColors.textSecondary,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: AppSpacing.p20),
+
+              // 5. Navigation & Sub-feature Links
               EchoButton(
                 label: 'View Exposure History',
                 icon: Icons.history,
@@ -100,7 +211,7 @@ class MonitoringHistoryScreen extends StatefulWidget {
 }
 
 class _MonitoringHistoryScreenState extends State<MonitoringHistoryScreen> {
-  int _selectedSegment = 0; // 0: Day, 1: Week, 2: Month
+  String _selectedPeriod = 'Day';
 
   @override
   Widget build(BuildContext context) {
@@ -116,24 +227,21 @@ class _MonitoringHistoryScreenState extends State<MonitoringHistoryScreen> {
         ],
       ),
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(AppSpacing.p16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Segmented Control: Day / Week / Month
-              SegmentedButton<int>(
-                segments: const [
-                  ButtonSegment(value: 0, label: Text('Day')),
-                  ButtonSegment(value: 1, label: Text('Week')),
-                  ButtonSegment(value: 2, label: Text('Month')),
+              EchoSegmentedControl<String>(
+                options: const [
+                  EchoSegmentOption(value: 'Day', label: 'Day'),
+                  EchoSegmentOption(value: 'Week', label: 'Week'),
+                  EchoSegmentOption(value: 'Month', label: 'Month'),
                 ],
-                selected: {_selectedSegment},
-                onSelectionChanged: (newSelection) {
-                  setState(() => _selectedSegment = newSelection.first);
-                },
+                selectedValue: _selectedPeriod,
+                onChanged: (val) => setState(() => _selectedPeriod = val),
               ),
-              const SizedBox(height: AppSpacing.p24),
+              const SizedBox(height: AppSpacing.p16),
               const EchoCard(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

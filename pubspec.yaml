@@ -14,7 +14,7 @@ dependencies:
   go_router: ^14.2.0
   fl_chart: ^0.68.0
   cupertino_icons: ^1.0.8
-  google_fonts: ^8.2.1
+
 
 dev_dependencies:
   flutter_test:
@@ -33,9 +33,7 @@ flutter:
     - assets/fonts/
 
   fonts:
-    - family: PlusJakartaSans
-      fonts:
-        - asset: assets/fonts/PlusJakartaSans-Variable.ttf
+
     - family: DMSans
       fonts:
         - asset: assets/fonts/DMSans-Regular.ttf

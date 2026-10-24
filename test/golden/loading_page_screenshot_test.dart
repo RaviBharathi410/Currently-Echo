@@ -16,14 +16,7 @@ import 'package:echo/features/dashboard/presentation/dashboard_screen.dart';
 import 'package:echo/features/dashboard/application/dashboard_provider.dart';
 
 Future<void> _loadTestFonts() async {
-  final fontLoader = FontLoader('PlusJakartaSans');
-  const variableFontPath = 'assets/fonts/PlusJakartaSans-Variable.ttf';
-  if (File(variableFontPath).existsSync()) {
-    final bytes = File(variableFontPath).readAsBytesSync();
-    fontLoader.addFont(Future.value(ByteData.view(bytes.buffer)));
-    await fontLoader.load();
-  }
-
+  // Load DM Sans fonts for the golden test (PlusJakartaSans removed)
   final dmSansLoader = FontLoader('DMSans');
   for (final file in [
     'assets/fonts/DMSans-Regular.ttf',
@@ -37,6 +30,8 @@ Future<void> _loadTestFonts() async {
     }
   }
   await dmSansLoader.load();
+
+
 
   const iconPath = r'C:\development\flutter\bin\cache\artifacts\material_fonts\MaterialIcons-Regular.otf';
   if (File(iconPath).existsSync()) {

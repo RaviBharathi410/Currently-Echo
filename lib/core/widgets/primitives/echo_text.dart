@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../theme/app_typography.dart';
 
 enum EchoTextStyleVariant {
+  frequencyDisplay,
   displayLarge,
   titleLarge,
   titleMedium,
@@ -52,6 +53,9 @@ class EchoText extends StatelessWidget {
   Widget build(BuildContext context) {
     TextStyle style;
     switch (variant) {
+      case EchoTextStyleVariant.frequencyDisplay:
+        style = AppTypography.frequencyDisplay;
+        break;
       case EchoTextStyleVariant.displayLarge:
         style = AppTypography.displayLarge;
         break;

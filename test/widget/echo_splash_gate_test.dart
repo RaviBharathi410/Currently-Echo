@@ -286,7 +286,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Confirm navigation succeeded to the monitor tab
-      expect(find.text('Live Sound Monitor'), findsOneWidget);
+      expect(find.text('Sound Monitoring'), findsOneWidget);
 
       // Navigate to another tab (Tab 5: Profile & Settings)
       final profileTab = find.bySemanticsLabel('Profile & Settings, Tab 5 of 5');

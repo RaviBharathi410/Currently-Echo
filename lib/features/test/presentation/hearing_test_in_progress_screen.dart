@@ -9,6 +9,9 @@ import '../../../core/widgets/primitives/echo_button.dart';
 import '../../../core/widgets/primitives/echo_card.dart';
 import '../../../core/widgets/primitives/echo_text.dart';
 import '../../../core/widgets/domain/sample_data_tag.dart';
+import '../../../core/widgets/domain/echo_check_circle_hero.dart';
+import '../../../core/widgets/domain/echo_glow_rings.dart';
+import '../../../core/widgets/domain/echo_headphone_hero.dart';
 import '../application/hearing_test_notifier.dart';
 import '../domain/models/hearing_threshold_result.dart';
 
@@ -81,12 +84,13 @@ class _EarInterstitialView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Icon(
-              Icons.headphones,
-              size: 64.0,
-              color: AppColors.blue500,
+            const Center(
+              child: EchoCheckCircleHero(
+                size: 96.0,
+                semanticLabel: 'Left Ear Screening Complete',
+              ),
             ),
-            const SizedBox(height: AppSpacing.p16),
+            const SizedBox(height: AppSpacing.p20),
             const EchoText(
               'Left Ear Screening Complete',
               variant: EchoTextStyleVariant.titleLarge,
@@ -99,7 +103,37 @@ class _EarInterstitialView extends StatelessWidget {
               textAlign: TextAlign.center,
               color: AppColors.textSecondary,
             ),
-            const SizedBox(height: AppSpacing.p32),
+            const SizedBox(height: AppSpacing.p20),
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.p16,
+                vertical: AppSpacing.p12,
+              ),
+              decoration: BoxDecoration(
+                color: AppColors.blue100,
+                borderRadius: BorderRadius.circular(AppRadii.md),
+                border: Border.all(color: AppColors.blue400),
+              ),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.headphones,
+                    size: 20.0,
+                    color: AppColors.blue500,
+                  ),
+                  SizedBox(width: AppSpacing.p8),
+                  Flexible(
+                    child: EchoText(
+                      'Switching stimulus to Right Ear',
+                      variant: EchoTextStyleVariant.labelMedium,
+                      color: AppColors.blue500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: AppSpacing.p24),
             EchoButton(
               label: 'Continue to Right Ear',
               icon: Icons.arrow_forward,
@@ -181,29 +215,23 @@ class _ScreeningProgressView extends ConsumerWidget {
             textAlign: TextAlign.end,
             color: AppColors.textSecondary,
           ),
-          const SizedBox(height: AppSpacing.p24),
+          const SizedBox(height: AppSpacing.p20),
 
-          // 3. Central Stimulus Card
+          // 3. Central Stimulus Card with Pulsing Acoustic Glow Rings and Active Ear Accenting
           EchoCard(
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: AppSpacing.p24),
+              padding: const EdgeInsets.symmetric(vertical: AppSpacing.p16),
               child: Column(
                 children: [
-                  Container(
-                    width: 96.0,
-                    height: 96.0,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: AppColors.blue100,
-                      border: Border.all(
-                        color: AppColors.blue400,
-                        width: 2.0,
-                      ),
-                    ),
-                    child: const Icon(
-                      Icons.graphic_eq,
-                      size: 48.0,
-                      color: AppColors.blue500,
+                  EchoGlowRings(
+                    size: 180.0,
+                    isPulsing: true,
+                    child: EchoHeadphoneHero(
+                      size: 130.0,
+                      activeEar: state.currentEar == HearingEar.left
+                          ? EchoEarTarget.left
+                          : EchoEarTarget.right,
+                      showBadges: true,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.p16),
@@ -222,7 +250,7 @@ class _ScreeningProgressView extends ConsumerWidget {
               ),
             ),
           ),
-          const SizedBox(height: AppSpacing.p32),
+          const SizedBox(height: AppSpacing.p24),
 
           // 4. Tone Feedback Actions
           EchoButton(

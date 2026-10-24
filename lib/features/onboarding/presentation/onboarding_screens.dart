@@ -15,6 +15,8 @@ import '../../../core/widgets/primitives/echo_text_field.dart';
 import '../../auth/application/auth_provider.dart';
 import '../../test/application/hearing_test_notifier.dart';
 import '../../test/domain/models/hearing_threshold_result.dart';
+import '../../onboarding/application/onboarding_provider.dart';
+
 
 // =============================================================================
 // 1. WelcomeScreen (/welcome)
@@ -155,14 +157,14 @@ class _ValuePropCard extends StatelessWidget {
 // =============================================================================
 // 2. AuthScreen (/auth)
 // =============================================================================
-class AuthScreen extends StatefulWidget {
+class AuthScreen extends ConsumerStatefulWidget {
   const AuthScreen({super.key});
 
   @override
-  State<AuthScreen> createState() => _AuthScreenState();
+  ConsumerState<AuthScreen> createState() => _AuthScreenState();
 }
 
-class _AuthScreenState extends State<AuthScreen> {
+class _AuthScreenState extends ConsumerState<AuthScreen> {
   bool isSignUp = false;
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -316,14 +318,14 @@ class _AuthScreenState extends State<AuthScreen> {
 // 3. ProfileSetupScreen (/profile-setup)
 // Scope: Name, Age / Age Range, Preferred Language.
 // =============================================================================
-class ProfileSetupScreen extends StatefulWidget {
+class ProfileSetupScreen extends ConsumerStatefulWidget {
   const ProfileSetupScreen({super.key});
 
   @override
-  State<ProfileSetupScreen> createState() => _ProfileSetupScreenState();
+  ConsumerState<ProfileSetupScreen> createState() => _ProfileSetupScreenState();
 }
 
-class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
+class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
   final _nameController = TextEditingController(text: 'Alex Parker');
   String _selectedAgeRange = '18–35';
   String _selectedLanguage = 'English';
@@ -442,7 +444,17 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
               EchoButton(
                 label: 'Continue to Disclaimer',
                 icon: Icons.arrow_forward,
-                onPressed: () => context.go('/disclaimer'),
+                onPressed: () {
+                  try {
+                    ref.read(onboardingProvider.notifier).setProfile(
+                      name: _nameController.text.trim(),
+                      age: _selectedAgeRange,
+                      language: _selectedLanguage,
+                    );
+                    ref.read(onboardingProvider.notifier).setStep(3);
+                  } catch (_) {}
+                  context.go('/disclaimer');
+                },
               ),
             ],
           ),
@@ -456,14 +468,14 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
 // 4. DisclaimerScreen (/disclaimer)
 // Scope Wording: "preliminary screening, not a substitute for professional audiological assessment"
 // =============================================================================
-class DisclaimerScreen extends StatefulWidget {
+class DisclaimerScreen extends ConsumerStatefulWidget {
   const DisclaimerScreen({super.key});
 
   @override
-  State<DisclaimerScreen> createState() => _DisclaimerScreenState();
+  ConsumerState<DisclaimerScreen> createState() => _DisclaimerScreenState();
 }
 
-class _DisclaimerScreenState extends State<DisclaimerScreen> {
+class _DisclaimerScreenState extends ConsumerState<DisclaimerScreen> {
   bool isAcknowledged = false;
 
   @override
@@ -529,7 +541,15 @@ class _DisclaimerScreenState extends State<DisclaimerScreen> {
               EchoButton(
                 label: 'Accept & Continue',
                 icon: Icons.check,
-                onPressed: isAcknowledged ? () => context.go('/permissions') : null,
+                onPressed: isAcknowledged
+                    ? () {
+                        try {
+                          ref.read(onboardingProvider.notifier).acceptDisclaimer(true);
+                          ref.read(onboardingProvider.notifier).setStep(4);
+                        } catch (_) {}
+                        context.go('/permissions');
+                      }
+                    : null,
               ),
             ],
           ),
@@ -543,14 +563,14 @@ class _DisclaimerScreenState extends State<DisclaimerScreen> {
 // 5. PermissionsScreen (/permissions)
 // Scope: Microphone, Notifications, Bluetooth. Copy: Simulated.
 // =============================================================================
-class PermissionsScreen extends StatefulWidget {
+class PermissionsScreen extends ConsumerStatefulWidget {
   const PermissionsScreen({super.key});
 
   @override
-  State<PermissionsScreen> createState() => _PermissionsScreenState();
+  ConsumerState<PermissionsScreen> createState() => _PermissionsScreenState();
 }
 
-class _PermissionsScreenState extends State<PermissionsScreen> {
+class _PermissionsScreenState extends ConsumerState<PermissionsScreen> {
   bool micEnabled = true;
   bool notifEnabled = true;
   bool bluetoothEnabled = true;
@@ -607,7 +627,17 @@ class _PermissionsScreenState extends State<PermissionsScreen> {
               EchoButton(
                 label: 'Continue to Device Setup',
                 icon: Icons.arrow_forward,
-                onPressed: () => context.go('/device-setup'),
+                onPressed: () {
+                  try {
+                    ref.read(onboardingProvider.notifier).setPermissions(
+                      mic: micEnabled,
+                      notif: notifEnabled,
+                      bt: bluetoothEnabled,
+                    );
+                    ref.read(onboardingProvider.notifier).setStep(5);
+                  } catch (_) {}
+                  context.go('/device-setup');
+                },
               ),
             ],
           ),
@@ -681,14 +711,14 @@ enum DeviceSetupStateVariant {
   permissionDenied,
 }
 
-class DeviceSetupScreen extends StatefulWidget {
+class DeviceSetupScreen extends ConsumerStatefulWidget {
   const DeviceSetupScreen({super.key});
 
   @override
-  State<DeviceSetupScreen> createState() => _DeviceSetupScreenState();
+  ConsumerState<DeviceSetupScreen> createState() => _DeviceSetupScreenState();
 }
 
-class _DeviceSetupScreenState extends State<DeviceSetupScreen> {
+class _DeviceSetupScreenState extends ConsumerState<DeviceSetupScreen> {
   DeviceSetupStateVariant _variant = DeviceSetupStateVariant.connected;
 
   @override
@@ -874,7 +904,14 @@ class _DeviceSetupScreenState extends State<DeviceSetupScreen> {
                 label: 'Continue to Screening Briefing',
                 icon: Icons.arrow_forward,
                 onPressed: _variant == DeviceSetupStateVariant.connected
-                    ? () => context.go('/onboarding/test-intro')
+                    ? () {
+                        try {
+                          ref.read(onboardingProvider.notifier).setDeviceConnection(true);
+                          ref.read(onboardingProvider.notifier).completeOnboarding();
+                          ref.read(onboardingProvider.notifier).setStep(6);
+                        } catch (_) {}
+                        context.go('/onboarding/test-intro');
+                      }
                     : null,
               ),
             ],

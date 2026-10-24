@@ -142,7 +142,7 @@ void main() {
           reason: 'blue400 on surface must be >= 3.0 for WCAG 1.4.11 (Actual: $blue400Surface)');
     });
 
-    test('All TextTheme styles must strictly use PlusJakartaSans with letterSpacing 0', () {
+    test('All TextTheme styles must strictly use DMSans with letterSpacing 0', () {
       final textTheme = AppTypography.createTextTheme();
       final styles = [
         textTheme.displayLarge,
@@ -158,12 +158,12 @@ void main() {
 
       for (final style in styles) {
         expect(style, isNotNull);
-        expect(style!.fontFamily, equals('PlusJakartaSans'));
+        expect(style!.fontFamily, equals('DMSans'));
         expect(style.letterSpacing, equals(0.0));
       }
     });
 
-    test('Usage-based semantic styles strictly use PlusJakartaSans and appropriate bold weights (ADR-010)', () {
+    test('Usage-based semantic styles strictly use DMSans and appropriate bold weights (ADR-010)', () {
       final semanticStyles = [
         AppTypography.statDisplay,
         AppTypography.statLabel,
@@ -175,7 +175,7 @@ void main() {
       ];
 
       for (final style in semanticStyles) {
-        expect(style.fontFamily, equals('PlusJakartaSans'), reason: 'All typography styles must use PlusJakartaSans');
+        expect(style.fontFamily, equals('DMSans'), reason: 'All typography styles must use DMSans');
         expect(style.fontWeight!.value >= FontWeight.w600.value, isTrue,
             reason: 'Usage-based bold styles must be at least SemiBold w600');
       }
